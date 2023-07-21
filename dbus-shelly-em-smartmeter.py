@@ -38,9 +38,6 @@ class DbusShellyemService:
     
     # Create the mandatory objects
     self._dbusservice.add_path('/DeviceInstance', deviceinstance)
-    #self._dbusservice.add_path('/ProductId', 16) # value used in ac_sensor_bridge.cpp of dbus-cgwacs
-    #self._dbusservice.add_path('/ProductId', 0xFFFF) # id assigned by Victron Support from SDM630v2.py
-    #self._dbusservice.add_path('/ProductId', 45069) # found on https://www.sascha-curth.de/projekte/005_Color_Control_GX.html#experiment - should be an ET340 Engerie Meter
     self._dbusservice.add_path('/ProductId', 0xB023) # id needs to be assigned by Victron Support current value for testing
     self._dbusservice.add_path('/DeviceType', 345) # found on https://www.sascha-curth.de/projekte/005_Color_Control_GX.html#experiment - should be an ET340 Engerie Meter
     self._dbusservice.add_path('/ProductName', productname)
@@ -120,8 +117,8 @@ class DbusShellyemService:
     # check for Json
     if not meter_data:
         raise ValueError("Converting response to JSON failed")
-    
-    
+
+
     return meter_data
  
  
@@ -136,9 +133,7 @@ class DbusShellyemService:
     try:
        #get data from Shelly em
        meter_data = self._getShellyData()
-      
-      
-       
+
        #send data to DBus
        self._dbusservice['/Ac/L1/Voltage'] = meter_data['emeters'][0]['voltage']
  
@@ -149,24 +144,11 @@ class DbusShellyemService:
        self._dbusservice['/Ac/L1/Energy/Forward'] = (meter_data['emeters'][0]['total']/1000)
        self._dbusservice['/Ac/L1/Energy/Reverse'] = (meter_data['emeters'][0]['total_returned']/1000)    
        
-        
-       #self._dbusservice['/Ac/Power'] = meter_data['total_power'] # positive: consumption, negative: feed into grid
-       #self._dbusservice['/Ac/L2/Voltage'] = meter_data['emeters'][1]['voltage']
-       #self._dbusservice['/Ac/L2/Current'] = meter_data['emeters'][1]['current']
-       #self._dbusservice['/Ac/L2/Power'] = meter_data['emeters'][1]['power']
-       #self._dbusservice['/Ac/L2/Energy/Forward'] = (meter_data['emeters'][1]['total']/1000)
-       #self._dbusservice['/Ac/L2/Energy/Reverse'] = (meter_data['emeters'][1]['total_returned']/1000) 
-
-       #self._dbusservice['/Ac/L3/Voltage'] = meter_data['emeters'][2]['voltage']
-       #self._dbusservice['/Ac/L3/Current'] = meter_data['emeters'][2]['current']
-       #self._dbusservice['/Ac/L3/Power'] = meter_data['emeters'][2]['power']
-       #self._dbusservice['/Ac/L3/Energy/Forward'] = (meter_data['emeters'][2]['total']/1000)
-       #self._dbusservice['/Ac/L3/Energy/Reverse'] = (meter_data['emeters'][2]['total_returned']/1000) 
+       self._dbusservice['/Ac/Current'] = self._dbusservice['/Ac/L1/Current']  
+       self._dbusservice['/Ac/Power'] = self._dbusservice['/Ac/L1/Power']
 
        self._dbusservice['/Ac/Energy/Forward'] = self._dbusservice['/Ac/L1/Energy/Forward']
-       #+ self._dbusservice['/Ac/L2/Energy/Forward'] + self._dbusservice['/Ac/L3/Energy/Forward']
        self._dbusservice['/Ac/Energy/Reverse'] = self._dbusservice['/Ac/L1/Energy/Reverse'] 
-       #+ self._dbusservice['/Ac/L2/Energy/Reverse'] + self._dbusservice['/Ac/L3/Energy/Reverse'] 
           
        #logging
        logging.debug("House Consumption (/Ac/Power): %s" % (self._dbusservice['/Ac/Power']))
@@ -229,20 +211,10 @@ def main():
           '/Ac/Voltage': {'initial': 0, 'textformat': _v},
           
           '/Ac/L1/Voltage': {'initial': 0, 'textformat': _v},
-          #'/Ac/L2/Voltage': {'initial': 0, 'textformat': _v},
-          #'/Ac/L3/Voltage': {'initial': 0, 'textformat': _v},
           '/Ac/L1/Current': {'initial': 0, 'textformat': _a},
-          #'/Ac/L2/Current': {'initial': 0, 'textformat': _a},
-          #'/Ac/L3/Current': {'initial': 0, 'textformat': _a},
           '/Ac/L1/Power': {'initial': 0, 'textformat': _w},
-          #'/Ac/L2/Power': {'initial': 0, 'textformat': _w},
-          #'/Ac/L3/Power': {'initial': 0, 'textformat': _w},
           '/Ac/L1/Energy/Forward': {'initial': 0, 'textformat': _kwh},
-          #'/Ac/L2/Energy/Forward': {'initial': 0, 'textformat': _kwh},
-          #'/Ac/L3/Energy/Forward': {'initial': 0, 'textformat': _kwh},
           '/Ac/L1/Energy/Reverse': {'initial': 0, 'textformat': _kwh},
-          #'/Ac/L2/Energy/Reverse': {'initial': 0, 'textformat': _kwh},
-          #'/Ac/L3/Energy/Reverse': {'initial': 0, 'textformat': _kwh},
         })
      
       logging.info('Connected to dbus, and switching over to gobject.MainLoop() (= event based)')

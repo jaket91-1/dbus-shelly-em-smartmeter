@@ -9,6 +9,7 @@ Idea is inspired on @fabian-lauer & @vikt0rm projects linked below.
 
 ## Inspiration
 This is my first project with the Victron Venus OS on GitHub, so I took some ideas and approaches from the following projects - many thanks for sharing the knowledge:
+- https://github.com/vincegod/dbus-shelly-em-smartmeter
 - https://github.com/fabian-lauer/dbus-shelly-3em-smartmeter
 - https://github.com/vikt0rm/dbus-shelly-1pm-pvinverter
 - https://shelly-api-docs.shelly.cloud/gen1/#shelly-em
@@ -20,18 +21,11 @@ This is my first project with the Victron Venus OS on GitHub, so I took some ide
 
 ## How it works
 ### My setup
-- 3-Phase installation
-- Shelly 1PM with latest firmware (20220209-094317/v1.11.8-g8c7bb8d)
-  - Measuring AC output of SUN-2000 GTIL on phase L3
+- Motorhome with 1-Phase Shorepower
+- Shelly EM
+  - Measuring AC output of ShorePower on phase L1
   - Connected to Wifi netowrk "A" with a known IP  
-- Shelly 1PM with latest firmware (20220209-094317/v1.11.8-g8c7bb8d)
-  - Measuring AC output of Envertech EVT-500 and Hoymiles HM-800 on phase L3
-  - Connected to Wifi netowrk "A" with a known IP  
-- Shelly 3EM used as a grid meter
-  - Connected over https://github.com/fabian-lauer/dbus-shelly-3em-smartmeter
-  - Connected to Wifi netowrk "A" with a known IP  
-- Venus OS on Raspberry PI 4 4GB version 1.1 - Firmware v2.84
-  - No other devices from Victron connected
+- Venus OS on Raspberry PI 4 4GB 
   - Connected to Wifi netowrk "A"
 
 ### Details / Process
@@ -61,7 +55,7 @@ After that call the install.sh script.
 
 The following script should do everything for you:
 ```
-wget https://github.com/vincegod/dbus-shelly-em-smartmeter/archive/refs/heads/main.zip
+wget https://github.com/mcfrojd/dbus-shelly-em-smartmeter/archive/refs/heads/main.zip
 unzip main.zip "dbus-shelly-em-smartmeter-main/*" -d /data
 mv /data/dbus-shelly-em-smartmeter-main /data/dbus-shelly-em-smartmeter
 chmod a+x /data/dbus-shelly-em-smartmeter/install.sh
@@ -80,6 +74,7 @@ Within the project there is a file `/data/dbus-shelly-em-smartmeter/config.ini` 
 | DEFAULT  | Deviceinstance | Unique ID identifying the shelly 1pm in Venus OS |
 | DEFAULT  | CustomName | Name shown in Remote Console (e.g. name of pv inverter) |
 | DEFAULT  | Phase | Valid values L1, L2 or L3: represents the phase where pv inverter is feeding in |
+| DEFAULT  | LogLevel | CRITICAL |
 | ONPREMISE  | Host | IP or hostname of on-premise Shelly 3EM web-interface |
 | ONPREMISE  | Username | Username for htaccess login - leave blank if no username/password required |
 | ONPREMISE  | Password | Password for htaccess login - leave blank if no username/password required |
