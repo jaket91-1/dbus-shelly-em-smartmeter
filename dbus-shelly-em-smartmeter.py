@@ -41,15 +41,16 @@ class DbusShellyemService:
     self._dbusservice.add_path('/ProductId', 0xB023) # id needs to be assigned by Victron Support current value for testing
     self._dbusservice.add_path('/DeviceType', 345) # found on https://www.sascha-curth.de/projekte/005_Color_Control_GX.html#experiment - should be an ET340 Engerie Meter
     self._dbusservice.add_path('/ProductName', productname)
-    self._dbusservice.add_path('/CustomName', customname)    
-    self._dbusservice.add_path('/Latency', None)    
-    self._dbusservice.add_path('/FirmwareVersion', 0.1)
-    self._dbusservice.add_path('/HardwareVersion', 0)
+    self._dbusservice.add_path('/CustomName', customname)
     self._dbusservice.add_path('/Connected', 1)
-    self._dbusservice.add_path('/Role', 'grid')
-    self._dbusservice.add_path('/Position', 0) # normaly only needed for pvinverter
+    self._dbusservice.add_path('/Latency', None)    
+    self._dbusservice.add_path('/FirmwareVersion', self._getShellyFWVersion())
+    self._dbusservice.add_path('/HardwareVersion', 0)
+    self._dbusservice.add_path('/Position', int(config['DEFAULT']['Position']))
     self._dbusservice.add_path('/Serial', self._getShellySerial())
     self._dbusservice.add_path('/UpdateIndex', 0)
+#   self._dbusservice.add_path('/StatusCode', 0)  # Dummy path so VRM detects us as a PV-inverter.
+    self._dbusservice.add_path('/Role', int(config['DEFAULT']['Role']))
     
     # add path values to dbus
     for path, settings in self._paths.items():
@@ -74,7 +75,15 @@ class DbusShellyemService:
     serial = meter_data['mac']
     return serial
  
- 
+  def _getShellyFWVersion(self):
+    meter_data = self._getShellyData()
+
+    if not meter_data['update']['old_version']:
+        raise ValueError("Response does not contain 'update/old_version' attribute")
+
+    ver = meter_data['update']['old_version']
+    return ver
+
   def _getConfig(self):
     config = configparser.ConfigParser()
     config.read("%s/config.ini" % (os.path.dirname(os.path.realpath(__file__))))
