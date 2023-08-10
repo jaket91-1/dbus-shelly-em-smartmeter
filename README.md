@@ -69,14 +69,16 @@ rm master.zip
 ### Change config.ini
 Within the project there is a file `/data/dbus-shelly-em-smartmeter/config.ini` - just change the values - most important is the deviceinstance, custom name and phase under "DEFAULT" and host, username and password in section "ONPREMISE". More details below:
 
-| Section  | Config vlaue | Explanation |
+| Section  | Config value | Explanation |
 | ------------- | ------------- | ------------- |
 | DEFAULT  | AccessType | Fixed value 'OnPremise' |
 | DEFAULT  | SignOfLifeLog  | Time in minutes how often a status is added to the log-file `current.log` with log-level INFO |
 | DEFAULT  | Deviceinstance | Unique ID identifying the shelly 1pm in Venus OS |
 | DEFAULT  | CustomName | Name shown in Remote Console (e.g. name of pv inverter) |
 | DEFAULT  | Phase | Valid values L1, L2 or L3: represents the phase where pv inverter is feeding in |
-| DEFAULT  | LogLevel | CRITICAL |
+| DEFAULT  | LogLevel | CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET |
+| DEFAULT  | Position | 0 = input, 1 = output1, 2 = output 2, normaly only needed for pvinverter |
+| DEFAULT  | Role | grid, pvinverter, genset, acload |
 | ONPREMISE  | Host | IP or hostname of on-premise Shelly 3EM web-interface |
 | ONPREMISE  | Username | Username for htaccess login - leave blank if no username/password required |
 | ONPREMISE  | Password | Password for htaccess login - leave blank if no username/password required |
