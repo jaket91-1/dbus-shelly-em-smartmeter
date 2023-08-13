@@ -44,10 +44,10 @@ class DbusShellyemService:
     self._dbusservice.add_path('/CustomName', customname)
     self._dbusservice.add_path('/Connected', 1)
     self._dbusservice.add_path('/Latency', None)    
-    self._dbusservice.add_path('/FirmwareVersion', 99.9)
+    self._dbusservice.add_path('/FirmwareVersion', self._getShellyFWVersion())
     self._dbusservice.add_path('/HardwareVersion', 0)
     self._dbusservice.add_path('/Position', 0)
-    self._dbusservice.add_path('/Serial', 99.9)
+    self._dbusservice.add_path('/Serial', self._getShellySerial())
     self._dbusservice.add_path('/UpdateIndex', 0)
     self._dbusservice.add_path('/Role', 'grid')
     
@@ -65,23 +65,23 @@ class DbusShellyemService:
     # add _signOfLife 'timer' to get feedback in log every 5minutes
     gobject.timeout_add(self._getSignOfLifeInterval()*60*1000, self._signOfLife)
  
-  # def _getShellySerial(self):
-  #   meter_data = self._getShellyData()  
+  def _getShellySerial(self):
+    meter_data = self._getShellyData()  
     
-  #   if not meter_data['mac']:
-  #       raise ValueError("Response does not contain 'mac' attribute")
+    if not meter_data['mac']:
+        raise ValueError("Response does not contain 'mac' attribute")
     
-  #   serial = meter_data['mac']
-  #   return serial
+    serial = meter_data['mac']
+    return serial
  
-  # def _getShellyFWVersion(self):
-  #   meter_data = self._getShellyData()
+  def _getShellyFWVersion(self):
+    meter_data = self._getShellyData()
 
-  #   if not meter_data['update']['old_version']:
-  #       raise ValueError("Response does not contain 'update/old_version' attribute")
+    if not meter_data['update']['old_version']:
+        raise ValueError("Response does not contain 'update/old_version' attribute")
 
-  #   ver = meter_data['update']['old_version']
-  #   return ver
+    ver = meter_data['update']['old_version']
+    return ver
 
   def _getConfig(self):
     config = configparser.ConfigParser()
